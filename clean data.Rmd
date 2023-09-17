@@ -1,0 +1,37 @@
+---
+title: "Clean Data"
+author: "Emily Rose Stringer"
+output: html_document
+---
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(readr)
+library(dplyr)
+library(janitor)
+library(stringr)
+library(lubridate)
+```
+
+```{r read-in-datasets, include=FALSE}
+fake_measures <- read_csv("~/Documents/repos/S311-plankton-research/fake_data_measures.csv")
+fake_data <- read_csv("~/Documents/repos/S311-plankton-research/fake_data.csv")
+```
+
+```{r clean-data}
+clean_names(fake_data, case = "snake")
+clean_names(fake_measures, case = "snake")
+
+```
+
+```{r coerce-variables}
+#nequasset_2021$longitude <- as.double(nequasset_2021$longitude)
+
+```
+
+```{r}
+fake_data <- fake_data %>%
+ rename(number_river_herring = daily_total)
+```
+
+

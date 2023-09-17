@@ -1,9 +1,8 @@
-# S311 Research Project
-Emily Rose
-S311
-Fall 2023
---
-Make a small change!
+---
+title: "S311 Research Project"
+author: "Emily Rose Stringer"
+output: html_document
+---
 
 ```{r load-packages, message=FALSE}
 #install.packages('tidyverse')
