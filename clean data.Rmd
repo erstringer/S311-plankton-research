@@ -26,12 +26,35 @@ clean_names(fake_measures, case = "snake")
 
 ```{r coerce-variables}
 #nequasset_2021$longitude <- as.double(nequasset_2021$longitude)
+```
+
+```{r clean-data}
+#fake_data <- fake_data %>%
+# rename(number_river_herring = daily_total)
+
+fake_measures <- fake_measures %>%
+  mutate(cope_or_chae = case_when(
+             cope_or_chae == "cop" ~ "copepod",
+             cope_or_chae == "cha" ~ "chaetognath"))
+
+fake_measures <- fake_measures %>%
+  mutate(funct_group = case_when(
+             funct_group == "a" ~ "adult",
+             funct_group == "j" ~ "juveline", 
+             funct_group == "h" ~ "herbivore", 
+             funct_group == "c" ~ "carnivore"))
 
 ```
 
-```{r}
-fake_data <- fake_data %>%
- rename(number_river_herring = daily_total)
+```{r case-when}
+fake_measures <- fake_measures %>%
+mutate(size_class_real = case_when(size <= 1.2 ~ 'sc1',
+                                   size >= 1.3 ~ 'sc2',
+                                   size >= 1.9 ~ 'sc4',
+                                   size >= 3.0 ~ 'sc1'
+                                   ))
+
 ```
+
 
 
