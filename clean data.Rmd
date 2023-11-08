@@ -11,6 +11,7 @@ library(dplyr)
 library(janitor)
 library(stringr)
 library(lubridate)
+library(leaflet)
 ```
 
 ```{r read-in-datasets, include=FALSE}
@@ -40,7 +41,7 @@ fake_measures <- fake_measures %>%
 fake_measures <- fake_measures %>%
   mutate(funct_group = case_when(
              funct_group == "a" ~ "adult",
-             funct_group == "j" ~ "juveline", 
+             funct_group == "j" ~ "juvenile", 
              funct_group == "h" ~ "herbivore", 
              funct_group == "c" ~ "carnivore"))
 
@@ -54,6 +55,15 @@ mutate(size_class_real = case_when(size <= 1.2 ~ 'sc1',
                                    size >= 3.0 ~ 'sc1'
                                    ))
 
+#need to write "between"
+
+```
+
+```{r gg-plot}
+fake_data %>%
+  ggplot(aes(x = station, y = num_copepods)) +
+  geom_line()
+  
 ```
 
 
