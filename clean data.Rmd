@@ -39,23 +39,34 @@ fake_measures <- fake_measures %>%
              cope_or_chae == "cha" ~ "chaetognath"))
 
 fake_measures <- fake_measures %>%
-  mutate(funct_group = case_when(
-             funct_group == "a" ~ "adult",
-             funct_group == "j" ~ "juvenile", 
-             funct_group == "h" ~ "herbivore", 
-             funct_group == "c" ~ "carnivore"))
+  mutate(size_class = 
+           case_when(
+             size %in% (>= 0.5 & <= 1.2)))
+
+# fake_measures <- fake_measures %>%
+#  mutate(functional_group = 
+#            case_when(
+#              size_class == ""))
+# 
+# fake_measures <- fake_measures %>%
+#   mutate(funct_group = case_when(
+#              funct_group == "a" ~ "adult",
+#              funct_group == "j" ~ "juvenile", 
+#              funct_group == "h" ~ "herbivore", 
+#              funct_group == "c" ~ "carnivore"))
 
 ```
 
 ```{r case-when}
-fake_measures <- fake_measures %>%
-mutate(size_class_real = case_when(size <= 1.2 ~ 'sc1',
-                                   size >= 1.3 ~ 'sc2',
-                                   size >= 1.9 ~ 'sc4',
-                                   size >= 3.0 ~ 'sc1'
-                                   ))
+# fake_measures <- fake_measures %>%
+#mutate(size_class_real = case_when(size <= 1.2 ~ '1',
+#                                   size >= 1.3 & <= 1.8 ~ '2',
+#                                   size >= 1.9 & <= 2.9 ~ '3',
+#                                   size >= 3.0 ~ '4'
+#                                   ))
 
-#need to write "between"
+
+# SC1: 0.5– 1.2 mm; SC2: 1.3–1.8 mm; SC3: 1.9–3.0 mm; SC4: 3.4–8.2 mm
 
 ```
 
