@@ -57,21 +57,17 @@ S311_measures <- S311_measures %>%
               corrected_size <= 7.2 & cope_or_chae == "chaetognath" ~ "juvenile", 
               corrected_size >= 7.3 & cope_or_chae == "chaetognath" ~ "adult"))
 
-# S311_measures <- S311_measures %>%
-#  mutate(functional_group = 
-#            case_when(
-#              size_class == ""))
-# 
-# S311_measures <- S311_measures %>%
-#   mutate(funct_group = case_when(
-#              funct_group == "a" ~ "adult",
-#              funct_group == "j" ~ "juvenile", 
-#              funct_group == "h" ~ "herbivore", 
-#              funct_group == "c" ~ "carnivore"))
+S311_measures <- S311_measures %>%
+ mutate(functional_group =
+           case_when(
+             size_class == "adult" ~ "adult", 
+             size_class == "juvenile" ~ "juvenile"))
 
-```
+measures <- 
+  S311_measures %>%
+  select(station, cope_or_chae, corrected_size, size_class, functional_group)
 
-```{r lat-long}
+write_csv(measures, file = ("~/Documents/repos/S311-plankton-research/measures.csv"))
 
 ```
 

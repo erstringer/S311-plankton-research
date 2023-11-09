@@ -429,17 +429,17 @@ S311_measures &lt;- S311_measures %&gt;%
               corrected_size &lt;= 7.2 &amp; cope_or_chae == &quot;chaetognath&quot; ~ &quot;juvenile&quot;, 
               corrected_size &gt;= 7.3 &amp; cope_or_chae == &quot;chaetognath&quot; ~ &quot;adult&quot;))
 
-# S311_measures &lt;- S311_measures %&gt;%
-#  mutate(functional_group = 
-#            case_when(
-#              size_class == &quot;&quot;))
-# 
-# S311_measures &lt;- S311_measures %&gt;%
-#   mutate(funct_group = case_when(
-#              funct_group == &quot;a&quot; ~ &quot;adult&quot;,
-#              funct_group == &quot;j&quot; ~ &quot;juvenile&quot;, 
-#              funct_group == &quot;h&quot; ~ &quot;herbivore&quot;, 
-#              funct_group == &quot;c&quot; ~ &quot;carnivore&quot;))</code></pre>
+S311_measures &lt;- S311_measures %&gt;%
+ mutate(functional_group =
+           case_when(
+             size_class == &quot;adult&quot; ~ &quot;adult&quot;, 
+             size_class == &quot;juvenile&quot; ~ &quot;juvenile&quot;))
+
+measures &lt;- 
+  S311_measures %&gt;%
+  select(station, cope_or_chae, corrected_size, size_class, functional_group)
+
+write_csv(measures, file = (&quot;~/Documents/repos/S311-plankton-research/measures.csv&quot;))</code></pre>
 
 
 
