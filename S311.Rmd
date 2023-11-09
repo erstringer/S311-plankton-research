@@ -15,11 +15,14 @@ library(dplyr)
 library(janitor)
 library(sp)
 library(leaflet)
+library(ggplot2)
 ```
 
 ```{r read-in-datasets, include=FALSE}
 S311_measures <- read_csv("~/Documents/repos/S311-plankton-research/S311_measures.csv")
+measures <- read_csv("~/Documents/repos/S311-plankton-research/measures.csv")
 S311_data <- read_csv("~/Documents/repos/S311-plankton-research/S311_data.csv")
+S311_meta <- read_csv("~/Documents/repos/S311-plankton-research/S311_meta.csv")
 ```
 
 ```{r leaflet-map}
@@ -33,5 +36,76 @@ leaflet(data = S311_data) %>%
                    color = "#ff6633",
                    stroke = FALSE,
                     fillOpacity = 0.75)
+```
+
+```{r comparison-of-cop-chae}
+S311_data %>% 
+  ggplot(aes(x = station)) +
+  geom_line(aes(x = station, y = biomass_copepods), size = 1, color = "#238a8d") +
+  geom_line(aes(x = station, y = biomass_chaetognaths), size = 1, color = "#440154") + 
+  labs(title = "Chaetognaths and Copepods",
+       subtitle = "biomass from hundred counts", 
+       x = "station", y = "biomass") + 
+  theme_minimal() 
+
+```
+
+
+```{r copepod-size-distribution}
+measures %>%
+  mutate(station = factor(station, levels=c("13", "17", "20", "23", "26", "29", "33", "36", "38", "42", "44"))) %>%
+  filter(cope_or_chae == "copepod") %>%
+  ggplot(aes(x = station, y = corrected_size)) +
+  geom_violin() +
+  labs(title = "Size Distribution of Copepods", 
+       x = "station", y = "copepod length (mm)") + 
+  theme_minimal()
+```
+
+```{r chaetognath-size-distribution}
+measures %>%
+  mutate(station = factor(station, levels=c("13", "17", "20", "23", "26", "29", "33", "36", "38", "42", "44"))) %>%
+  filter(cope_or_chae == "chaetognath") %>%
+  ggplot(aes(x = station, y = corrected_size, fill = size_class, color = size_class)) +
+  geom_violin() +
+  labs(title = "Size Distribution of Copepods", 
+       x = "station", y = "chaetognath length (mm)") + 
+  theme_minimal() + 
+  scale_color_manual(values = c("adult" = "#a0da39", "juvenile" = "#365c8d"), guide = "none") +
+  scale_fill_manual(values = c("adult" = "#a0da39", "juvenile" = "#365c8d"))
+```
+
+```{r copepods-chla}
+copColor <- "#238a8d"
+chlaColor <- "#bade28"
+
+ # mutate(station = factor(station, levels=c("13", "17", "20", "23", "26", "29", "33", "36", "38", "42", "44"))) %>%
+   
+ggplot(S311_data, aes(x = station)) +
+    geom_line(aes(x = station, y = biomass_copepods), size = 1, color = "#238a8d") +
+    geom_area(aes(x = station, y = chl_a_concentration *100), size = 1, color = "#bade28", fill = "#bade28") + 
+    scale_y_continuous(name = "copepod biomass", sec.axis = sec_axis( trans=~./100, name="Chl-a concentration")) +
+      # scale_x_continuous("station", labels = as.character(S311_data$station), breaks = S311_data$station) +
+    theme_minimal() +
+    theme(axis.title.y = element_text(color = copColor),
+          axis.title.y.right = element_text(color = chlaColor))+
+    labs(title = "Copepods and Chloropyll-a concentration") 
+```
+
+```{r}
+S311_meta %>%
+  mutate(station = factor(station, levels=c("13", "17", "20", "23", "26", "29", "33", "36", "38", "42", "44"))) %>%
+  group_by(station) %>%
+  ggplot(aes(x = station, y = biomass, fill = cope_or_chae)) +
+  geom_col()
+```
+
+
+```{r chl-a-concentration}
+ggplot(S311_data, aes(x = chl_a_concentration)) +
+    geom_point(aes(x = chl_a_concentration, y = biomass_copepods), color = "#238a8d") +
+    geom_point(aes(x = chl_a_concentration, y = biomass_chaetognaths), color = "#28dea3") +
+  theme_minimal()
+    
 ```
 

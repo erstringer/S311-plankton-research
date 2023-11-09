@@ -20,7 +20,6 @@ S311_data <- read_csv("~/Documents/repos/S311-plankton-research/S311_data.csv")
 ```
 
 ```{r clean-data}
-clean_names(S311_data, case = "snake")
 clean_names(S311_measures, case = "snake")
 
 # coerce-variables
@@ -32,21 +31,6 @@ S311_measures <- S311_measures %>%
              cope_or_chae == "cop" ~ "copepod",
              cope_or_chae == "cha" ~ "chaetognath", 
              cope_or_chae == "cja" ~ "chaetognath"))
-
-#correct station names
-S311_measures <- S311_measures %>%
-   mutate(station = case_when(
-             station == "13" ~ "013-TT",
-             station == "17" ~ "017-TT",
-             station == "20" ~ "020-TT",
-             station == "23" ~ "023-TT",
-             station == "26" ~ "026-TT",
-             station == "29" ~ "029-TT",
-             station == "33" ~ "033-TT",
-             station == "36" ~ "036-TT",
-             station == "38" ~ "038-TT",
-             station == "42" ~ "042-TT",
-             station == "44" ~ "044-TT"))
 
 S311_measures <- S311_measures %>%
    mutate(size_class = 
@@ -70,6 +54,7 @@ measures <-
 write_csv(measures, file = ("~/Documents/repos/S311-plankton-research/measures.csv"))
 
 ```
+
 
 
 
