@@ -15,40 +15,54 @@ library(leaflet)
 ```
 
 ```{r read-in-datasets, include=FALSE}
-fake_measures <- read_csv("~/Documents/repos/S311-plankton-research/fake_data_measures.csv")
-fake_data <- read_csv("~/Documents/repos/S311-plankton-research/fake_data.csv")
+S311_measures <- read_csv("~/Documents/repos/S311-plankton-research/S311_measures.csv")
+S311_data <- read_csv("~/Documents/repos/S311-plankton-research/S311_data.csv")
 ```
 
 ```{r clean-data}
-clean_names(fake_data, case = "snake")
-clean_names(fake_measures, case = "snake")
+clean_names(S311_data, case = "snake")
+clean_names(S311_measures, case = "snake")
 
-```
-
-```{r coerce-variables}
+# coerce-variables
 #nequasset_2021$longitude <- as.double(nequasset_2021$longitude)
-```
 
-```{r clean-data}
-#fake_data <- fake_data %>%
-# rename(number_river_herring = daily_total)
-
-fake_measures <- fake_measures %>%
-  mutate(cope_or_chae = case_when(
+#correct abbreviations
+S311_measures <- S311_measures %>%
+   mutate(cope_or_chae = case_when(
              cope_or_chae == "cop" ~ "copepod",
-             cope_or_chae == "cha" ~ "chaetognath"))
+             cope_or_chae == "cha" ~ "chaetognath", 
+             cope_or_chae == "cja" ~ "chaetognath"))
 
-fake_measures <- fake_measures %>%
-  mutate(size_class = 
-           case_when(
-             size %in% (>= 0.5 & <= 1.2)))
+#correct station names
+S311_measures <- S311_measures %>%
+   mutate(station = case_when(
+             station == "13" ~ "013-TT",
+             station == "17" ~ "017-TT",
+             station == "20" ~ "020-TT",
+             station == "23" ~ "023-TT",
+             station == "26" ~ "026-TT",
+             station == "29" ~ "029-TT",
+             station == "33" ~ "033-TT",
+             station == "36" ~ "036-TT",
+             station == "38" ~ "038-TT",
+             station == "42" ~ "042-TT",
+             station == "44" ~ "044-TT"))
 
-# fake_measures <- fake_measures %>%
+S311_measures <- S311_measures %>%
+   mutate(size_class = 
+    case_when(corrected_size >= 0.5 & corrected_size <= 1.2 & cope_or_chae == "copepod" ~ "size class 1", 
+              corrected_size >= 1.3 & corrected_size <= 1.8 & cope_or_chae == "copepod" ~ "size class 2", 
+              corrected_size >= 1.9  & corrected_size <= 3.0 & cope_or_chae == "copepod" ~ "size class 3", 
+              corrected_size >= 3.1 & corrected_size <= 8.2 & cope_or_chae == "copepod" ~ "size class 4", 
+              corrected_size <= 7.2 & cope_or_chae == "chaetognath" ~ "juvenile", 
+              corrected_size >= 7.3 & cope_or_chae == "chaetognath" ~ "adult"))
+
+# S311_measures <- S311_measures %>%
 #  mutate(functional_group = 
 #            case_when(
 #              size_class == ""))
 # 
-# fake_measures <- fake_measures %>%
+# S311_measures <- S311_measures %>%
 #   mutate(funct_group = case_when(
 #              funct_group == "a" ~ "adult",
 #              funct_group == "j" ~ "juvenile", 
@@ -58,20 +72,17 @@ fake_measures <- fake_measures %>%
 ```
 
 ```{r case-when}
-# fake_measures <- fake_measures %>%
+# S311_measures <- S311_measures %>%
 #mutate(size_class_real = case_when(size <= 1.2 ~ '1',
 #                                   size >= 1.3 & <= 1.8 ~ '2',
 #                                   size >= 1.9 & <= 2.9 ~ '3',
 #                                   size >= 3.0 ~ '4'
 #                                   ))
 
-
-# SC1: 0.5– 1.2 mm; SC2: 1.3–1.8 mm; SC3: 1.9–3.0 mm; SC4: 3.4–8.2 mm
-
 ```
 
 ```{r gg-plot}
-fake_data %>%
+S311_data %>%
   ggplot(aes(x = station, y = num_copepods)) +
   geom_line()
   
