@@ -13,9 +13,25 @@ library(readr)
 library(dplyr)
 #install.packages('janitor')
 library(janitor)
+library(sp)
+library(leaflet)
 ```
 
-```{r}
+```{r read-in-datasets, include=FALSE}
+S311_measures <- read_csv("~/Documents/repos/S311-plankton-research/S311_measures.csv")
+S311_data <- read_csv("~/Documents/repos/S311-plankton-research/S311_data.csv")
+```
 
+```{r leaflet-map}
+leaflet(data = S311_data) %>%
+  addProviderTiles(providers$OpenTopoMap) %>%
+  setView(lng = -176,
+          lat = -22,
+          zoom = 3.5) %>%
+  addCircleMarkers(~long, ~lat, 
+                    radius = 6,
+                   color = "#ff6633",
+                   stroke = FALSE,
+                    fillOpacity = 0.75)
 ```
 
