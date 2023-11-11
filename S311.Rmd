@@ -23,6 +23,9 @@ S311_measures <- read_csv("~/Documents/repos/S311-plankton-research/S311_measure
 measures <- read_csv("~/Documents/repos/S311-plankton-research/measures.csv")
 S311_data <- read_csv("~/Documents/repos/S311-plankton-research/S311_data.csv")
 S311_meta <- read_csv("~/Documents/repos/S311-plankton-research/S311_meta.csv")
+meta_data <- read_csv("~/Documents/repos/S311-plankton-research/meta_data.csv")
+meta2 <- read_csv("~/Documents/repos/S311-plankton-research/meta2.csv")
+use_this_meta <- read_csv("~/Documents/repos/S311-plankton-research/use_this_meta.csv")
 ```
 
 ```{r leaflet-map}
@@ -38,16 +41,74 @@ leaflet(data = S311_data) %>%
                     fillOpacity = 0.75)
 ```
 
-```{r comparison-of-cop-chae}
-S311_data %>% 
-  ggplot(aes(x = station)) +
-  geom_line(aes(x = station, y = biomass_copepods), size = 1, color = "#238a8d") +
-  geom_line(aes(x = station, y = biomass_chaetognaths), size = 1, color = "#440154") + 
-  labs(title = "Chaetognaths and Copepods",
-       subtitle = "biomass from hundred counts", 
-       x = "station", y = "biomass") + 
-  theme_minimal() 
+###Summarizing data
 
+```{r chl-concentration}
+S311_data %>%
+ggplot(aes(x = station, y = chl_a_concentration)) + 
+  geom_line() + 
+  geom_point() +
+  theme_minimal()
+```
+
+```{r cope-biomass}
+meta_data %>%
+  filter(cope_or_chae == "copepod") %>%
+ggplot(aes(x = station, y = biomass)) + 
+  geom_line() + 
+  geom_point() +
+  theme_minimal()
+```
+
+```{r chae-biomass}
+meta_data %>%
+  filter(cope_or_chae == "chaetognath") %>%
+ggplot(aes(x = station, y = biomass)) + 
+  geom_line() + 
+  geom_point() +
+  theme_minimal()
+```
+
+```{r juvenile-chaetognaths}
+measures %>%
+  select(cope_or_chae, functional_group) %>%
+  filter(functional_group == "chaetognath juvenile") %>%
+  count()
+
+# 104 chaetognaths total, 72 adults (69.2%), 32 juveniles(30.7%).
+
+measures %>%
+  select(cope_or_chae, functional_group) %>%
+  filter(cope_or_chae == "copepod") %>%
+  count()
+
+# 106 total copepods, 105 herbivores (99%), 1 carnivore (0.9%)
+```
+
+
+```{r comparison-of-cop-chae}
+meta2 <- meta_data %>%
+  group_by(station, cope_or_chae) %>%
+  mutate(biomass_cop = case_when(
+                              cope_or_chae == "copepod" ~ biomass))
+write_csv(meta2, file = "~/Documents/repos/S311-plankton-research/meta2.csv")
+
+use_this_meta %>%
+  ggplot(aes(x = station, color = c_c)) +
+  geom_line(aes(x = station, y = biomass_cop), size = 1) +
+  geom_line(aes(x = station, y = num_juv), size = 1) +
+  geom_line(aes(x = station, y = num_adult), size = 1) +
+labs(title = "Chaetognaths and Copepods",
+       subtitle = "biomass from hundred counts", 
+       x = "station", y = "biomass") +
+  scale_color_manual(values = c("copepod" = "#238a8d", "adult chaetognath" = "#440154", "juvenile chaetognath" = "#bade28"), name = "") +
+  theme_minimal() 
+      
+# 104 chaetognaths total, 72 adults (69.2%), 32 juveniles(30.7%).
+
+
+# since this is biomass (percent of the count) rather than number/100 is it indicative of a relationship or is the relationship still constrained by the fact that this is out of 100
+# #/100 would show a false relationship while biomass shows a more realistic relationship of what is in the plankton?
 ```
 
 
@@ -62,6 +123,20 @@ measures %>%
   theme_minimal()
 ```
 
+```{r copepod-stats}
+measures %>%
+  select(station, corrected_size, cope_or_chae) %>%
+  group_by(station) %>%
+  filter(cope_or_chae == "copepod") %>%
+  summarise(median = median(corrected_size, na.rm = TRUE), 
+            max = max(corrected_size, na.rm = TRUE),
+            min = min(corrected_size, na.rm = TRUE),
+            mean = mean(corrected_size, na.rm = TRUE), 
+              sd = sd(corrected_size, na.rm = TRUE), 
+               IQR = IQR(corrected_size, na.rm = TRUE))
+```
+
+
 ```{r chaetognath-size-distribution}
 measures %>%
   mutate(station = factor(station, levels=c("13", "17", "20", "23", "26", "29", "33", "36", "38", "42", "44"))) %>%
@@ -71,8 +146,8 @@ measures %>%
   labs(title = "Size Distribution of Copepods", 
        x = "station", y = "chaetognath length (mm)") + 
   theme_minimal() + 
-  scale_color_manual(values = c("adult" = "#a0da39", "juvenile" = "#365c8d"), guide = "none") +
-  scale_fill_manual(values = c("adult" = "#a0da39", "juvenile" = "#365c8d"))
+  scale_color_manual(values = c("chaetognath adult" = "#a0da39", "chaetognath juvenile" = "#365c8d"), guide = "none") +
+  scale_fill_manual(values = c("chaetognath adult" = "#a0da39", "chaetognath juvenile" = "#365c8d"))
 ```
 
 ```{r copepods-chla}
@@ -83,9 +158,9 @@ chlaColor <- "#bade28"
    
 ggplot(S311_data, aes(x = station)) +
     geom_line(aes(x = station, y = biomass_copepods), size = 1, color = "#238a8d") +
-    geom_area(aes(x = station, y = chl_a_concentration *100), size = 1, color = "#bade28", fill = "#bade28") + 
+    geom_area(aes(x = station, y = chl_a_concentration *100), size = 1, color = "#bade28", fill = "#bade28") +
+    # geom_line(aes(x = station, y = biomass_chaetognaths), size = 1, color = "#238a8d") +
     scale_y_continuous(name = "copepod biomass", sec.axis = sec_axis( trans=~./100, name="Chl-a concentration")) +
-      # scale_x_continuous("station", labels = as.character(S311_data$station), breaks = S311_data$station) +
     theme_minimal() +
     theme(axis.title.y = element_text(color = copColor),
           axis.title.y.right = element_text(color = chlaColor))+
@@ -97,15 +172,67 @@ S311_meta %>%
   mutate(station = factor(station, levels=c("13", "17", "20", "23", "26", "29", "33", "36", "38", "42", "44"))) %>%
   group_by(station) %>%
   ggplot(aes(x = station, y = biomass, fill = cope_or_chae)) +
-  geom_col()
+  geom_col() +
+  scale_fill_manual(values = c("copepod" = "#238a8d", "chaetognath" = "#440154"))
 ```
 
 
 ```{r chl-a-concentration}
-ggplot(S311_data, aes(x = chl_a_concentration)) +
-    geom_point(aes(x = chl_a_concentration, y = biomass_copepods), color = "#238a8d") +
-    geom_point(aes(x = chl_a_concentration, y = biomass_chaetognaths), color = "#28dea3") +
-  theme_minimal()
+meta_data %>%
+# filter(cope_or_chae == "chaetognath") %>%
+ggplot(aes(x = chl_a_concentration, y = biomass, color = cope_or_chae)) +
+geom_point()+
+geom_smooth(method= lm)+
+labs(title = "Chaetognaths and Copepods",
+       subtitle = "biomass from hundred counts", 
+       x = "chlorophyll-a concentration", y = "biomass") + 
+  scale_color_manual(values = c("copepod" = "#238a8d", "chaetognath" = "#440154"), name = "") +
+  theme_minimal() 
     
+```
+
+```{r}
+measures %>% 
+  select(station, cope_or_chae, functional_group) %>%
+   add_column(subsample = "20") %>% # take this and pipe into the next graph
+  add_column(count_cc = "1") %>% # group_by station and count cope_or_chae to understand the total in the sample
+  group_by(station, cope_or_chae) %>%
+  count(count_cc, functional_group) %>% 
+  group_by(cope_or_chae) %>%
+      ggplot(aes(x = station, y = n, fill = functional_group)) +
+      geom_col() +
+      labs(title = "Proportion of Chaetognaths and Copepods",
+            subtitle = "measured from subsample", 
+            x = "station", y = "proportion") + 
+       # scale_fill_manual(values = c("copepod" = "#238a8d", "chaetognath" = "#440154"), name = "") +
+       scale_fill_manual(values = c("copepod (herbivorous/ omnivorous)" = "#29af7f", "copepod (carnivorous)" = "#bade28", "chaetognath adult" = "#440154", "chaetognath juvenile" = "#2d718e"), name = "") +
+        theme_minimal() 
+  
+```
+
+```{r}
+measures %>%
+  mutate(chl_a_concentration = case_when(
+    station == "13" ~ "0.1", 
+    station == "17" ~ "0.1",
+    station == "20" ~ "0.05",
+    station == "23" ~ "0.04",
+    station == "26" ~ "0.05",
+    station == "29" ~ "0.09",
+    station == "33" ~ "0.11",
+    station == "36" ~ "0.13",
+    station == "38" ~ "0.11",
+    station == "42" ~ "0.05",
+    station == "44" ~ "0.07")) %>%
+  mutate(chl_a_concentration = as.numeric(chl_a_concentration)) %>%
+  filter(cope_or_chae == "copepod") %>%
+  ggplot(aes(x = chl_a_concentration, y = corrected_size)) + 
+  geom_jitter(color = "#2d718e") +
+  geom_smooth(color = "#2d718e")+
+    labs(title = "Copepods Density and Chloropyll-a concentration", 
+         x = "chlorophyll-a concentration", 
+         y = "copepod size") +
+  theme_minimal()
+
 ```
 

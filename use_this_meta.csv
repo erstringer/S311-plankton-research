@@ -1,0 +1,34 @@
+station,chl_a_concentration,biomass,number,cope_or_chae,date,lat,long,num_juv,num_adult,biomass_cop,c_c
+13,0.1,14.8,15,chaetognath,11-Oct-23,-9.737,-178.947,,10.2416,,adult chaetognath
+13,0.1,14.8,15,chaetognath,12-Oct-23,-9.737,-178.947,4.5436,,,juvenile chaetognath
+13,0.1,54.4,55,copepod,11-Oct-23,-9.737,-178.947,,,54.4,copepod
+17,0.1,4,4,chaetognath,17-Oct-23,-9.942,-178.488,,2.768,,adult chaetognath
+17,0.1,4,4,chaetognath,18-Oct-23,-9.942,-178.488,1.228,,,juvenile chaetognath
+17,0.1,66,66,copepod,17-Oct-23,-9.942,-178.488,,,66,copepod
+20,0.05,0,0,chaetognath,18-Oct-23,-12.174,-176.949,,0,,adult chaetognath
+20,0.05,0,0,chaetognath,19-Oct-23,-12.174,-176.949,0,,,juvenile chaetognath
+20,0.05,71,71,copepod,18-Oct-23,-12.174,-176.949,,,71,copepod
+23,0.04,18.4,19,chaetognath,20-Oct-23,-14.618,-176.032,,12.7328,,adult chaetognath
+23,0.04,18.4,19,chaetognath,21-Oct-23,-14.618,-176.032,5.6488,,,juvenile chaetognath
+23,0.04,58.2,60,copepod,20-Oct-23,-14.618,-176.032,,,58.2,copepod
+26,0.05,2,2,chaetognath,21-Oct-23,-17.187,-176.34,,1.384,,adult chaetognath
+26,0.05,2,2,chaetognath,22-Oct-23,-17.187,-176.34,0.614,,,juvenile chaetognath
+26,0.05,66,65,copepod,21-Oct-23,-17.187,-176.34,,,66,copepod
+29,0.09,3,3,chaetognath,23-Oct-23,-19.242,-176.18,,2.076,,adult chaetognath
+29,0.09,3,3,chaetognath,24-Oct-23,-19.242,-176.18,0.921,,,juvenile chaetognath
+29,0.09,74,74,copepod,23-Oct-23,-19.242,-176.18,,,74,copepod
+33,0.11,1.9,2,chaetognath,25-Oct-23,-21.428,-175.95,,1.3148,,adult chaetognath
+33,0.11,1.9,2,chaetognath,26-Oct-23,-21.428,-175.95,0.5833,,,juvenile chaetognath
+33,0.11,66.7,56,copepod,25-Oct-23,-21.428,-175.95,,,66.7,copepod
+36,0.13,14,14,chaetognath,27-Oct-23,-23.867,-175.627,,9.688,,adult chaetognath
+36,0.13,14,14,chaetognath,28-Oct-23,-23.867,-175.627,4.298,,,juvenile chaetognath
+36,0.13,69,69,copepod,27-Oct-23,-23.867,-175.627,,,69,copepod
+38,0.11,5,5,chaetognath,28-Oct-23,-25.512,-174.797,,3.46,,adult chaetognath
+38,0.11,5,5,chaetognath,29-Oct-23,-25.512,-174.797,1.535,,,juvenile chaetognath
+38,0.11,70,70,copepod,28-Oct-23,-25.512,-174.797,,,70,copepod
+42,0.05,2,2,chaetognath,31-Oct-23,-28.918,-176.12,,1.384,,adult chaetognath
+42,0.05,2,2,chaetognath,1-Nov-23,-28.918,-176.12,0.614,,,juvenile chaetognath
+42,0.05,68,68,copepod,31-Oct-23,-28.918,-176.12,,,68,copepod
+44,0.07,2,2,chaetognath,1-Nov-23,-30.052,-176.36,,1.384,,adult chaetognath
+44,0.07,2,2,chaetognath,2-Nov-23,-30.052,-176.36,0.614,,,juvenile chaetognath
+44,0.07,69,70,copepod,1-Nov-23,-30.052,-176.36,,,69,copepod

@@ -17,6 +17,7 @@ library(leaflet)
 ```{r read-in-datasets, include=FALSE}
 S311_measures <- read_csv("~/Documents/repos/S311-plankton-research/S311_measures.csv")
 S311_data <- read_csv("~/Documents/repos/S311-plankton-research/S311_data.csv")
+S311_meta <- read_csv("~/Documents/repos/S311-plankton-research/S311_meta.csv")
 ```
 
 ```{r clean-data}
@@ -38,14 +39,18 @@ S311_measures <- S311_measures %>%
               corrected_size >= 1.3 & corrected_size <= 1.8 & cope_or_chae == "copepod" ~ "size class 2", 
               corrected_size >= 1.9  & corrected_size <= 3.0 & cope_or_chae == "copepod" ~ "size class 3", 
               corrected_size >= 3.1 & corrected_size <= 8.2 & cope_or_chae == "copepod" ~ "size class 4", 
-              corrected_size <= 7.2 & cope_or_chae == "chaetognath" ~ "juvenile", 
-              corrected_size >= 7.3 & cope_or_chae == "chaetognath" ~ "adult"))
+              corrected_size <= 7.2 & cope_or_chae == "chaetognath" ~ "chaetognath juvenile", 
+              corrected_size >= 7.3 & cope_or_chae == "chaetognath" ~ "chaetognath adult"))
 
 S311_measures <- S311_measures %>%
  mutate(functional_group =
            case_when(
-             size_class == "adult" ~ "adult", 
-             size_class == "juvenile" ~ "juvenile"))
+             size_class == "chaetognath adult" ~ "chaetognath adult", 
+             size_class == "chaetognath juvenile" ~ "chaetognath juvenile",
+             size_class == "size class 1" ~ "copepod (herbivorous/ omnivorous)",
+             size_class == "size class 2" ~ "copepod (herbivorous/ omnivorous)",
+             size_class == "size class 3" ~ "copepod (herbivorous/ omnivorous)",
+             size_class == "size class 4" ~ "copepod (carnivorous)"))
 
 measures <- 
   S311_measures %>%
@@ -55,6 +60,29 @@ write_csv(measures, file = ("~/Documents/repos/S311-plankton-research/measures.c
 
 ```
 
+```{r}
+#correct abbreviations
+S311_meta <- S311_meta %>%
+   mutate(cope_or_chae = case_when(
+             cope_or_chae == "cop" ~ "copepod",
+             cope_or_chae == "cha" ~ "chaetognath", 
+             cope_or_chae == "cja" ~ "chaetognath"))
+
+S311_meta <- S311_meta %>%
+  group_by(station, cope_or_chae) %>%
+  mutate(num_juv = case_when(
+    cope_or_chae == "chaetognath" ~ biomass * 0.307))
+
+S311_meta <- S311_meta %>%
+  group_by(station, cope_or_chae) %>%
+  mutate(num_adult = case_when(
+    cope_or_chae == "chaetognath" ~ biomass * 0.692))
+
+meta_data <- S311_meta %>%
+  select(station, chl_a_concentration, biomass, number, cope_or_chae, date, lat, long, num_juv, num_adult)
+
+write_csv(meta_data, file = ("~/Documents/repos/S311-plankton-research/meta_data.csv"))
+```
 
 
 
