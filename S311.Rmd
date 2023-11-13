@@ -19,13 +19,13 @@ library(ggplot2)
 ```
 
 ```{r read-in-datasets, include=FALSE}
-S311_measures <- read_csv("~/Documents/repos/S311-plankton-research/S311_measures.csv")
-measures <- read_csv("~/Documents/repos/S311-plankton-research/measures.csv")
-S311_data <- read_csv("~/Documents/repos/S311-plankton-research/S311_data.csv")
-S311_meta <- read_csv("~/Documents/repos/S311-plankton-research/S311_meta.csv")
-meta_data <- read_csv("~/Documents/repos/S311-plankton-research/meta_data.csv")
-meta2 <- read_csv("~/Documents/repos/S311-plankton-research/meta2.csv")
-use_this_meta <- read_csv("~/Documents/repos/S311-plankton-research/use_this_meta.csv")
+S311_measures <- read_csv("~/Documents/repos/S311-plankton-research/data/S311_measures.csv")
+measures <- read_csv("~/Documents/repos/S311-plankton-research/data/measures.csv")
+S311_data <- read_csv("~/Documents/repos/S311-plankton-research/data/S311_data.csv")
+S311_meta <- read_csv("~/Documents/repos/S311-plankton-research/data/S311_meta.csv")
+meta_data <- read_csv("~/Documents/repos/S311-plankton-research/data/meta_data.csv")
+meta2 <- read_csv("~/Documents/repos/S311-plankton-research/data/meta2.csv")
+use_this_meta <- read_csv("~/Documents/repos/S311-plankton-research/data/use_this_meta.csv")
 ```
 
 ```{r leaflet-map}
@@ -98,13 +98,13 @@ use_this_meta %>%
   geom_line(aes(x = station, y = biomass_cop), size = 1) +
   geom_line(aes(x = station, y = num_juv), size = 1) +
   geom_line(aes(x = station, y = num_adult), size = 1) +
-labs(title = "Chaetognaths and Copepods",
+labs(title = "fig. 2 Chaetognaths and Copepods",
        subtitle = "biomass from hundred counts", 
        x = "station", y = "biomass") +
   scale_color_manual(values = c("copepod" = "#238a8d", "adult chaetognath" = "#440154", "juvenile chaetognath" = "#bade28"), name = "") +
   theme_minimal() 
 
-ggsave("visuals/100countbiomass.jpg", device = "jpg", dpi = 500)
+ggsave("visuals/fig2.jpg", device = "jpg", dpi = 500)
 
       
 # 104 chaetognaths total, 72 adults (69.2%), 32 juveniles(30.7%).
@@ -167,9 +167,9 @@ ggplot(S311_data, aes(x = station)) +
     theme_minimal() +
     theme(axis.title.y = element_text(color = copColor),
           axis.title.y.right = element_text(color = chlaColor))+
-    labs(title = "Copepods and Chloropyll-a concentration") 
+    labs(title = "fig. 5 Copepods and Chloropyll-a concentration") 
 
-ggsave("visuals/chlaandcopepods", device = "jpg", dpi = 500)
+ggsave("visuals/fig5.jpg", device = "jpg", dpi = 500)
 ```
 
 ```{r}
@@ -188,13 +188,13 @@ meta_data %>%
 ggplot(aes(x = chl_a_concentration, y = biomass, color = cope_or_chae)) +
 geom_jitter()+
 geom_smooth(method= lm)+
-labs(title = "Chlorophyll-a concentration and biomass of Chaetognaths and Copepods",
+labs(title = "fig. 4 Chlorophyll-a concentration and biomass of Chaetognaths and Copepods",
        subtitle = "biomass from hundred counts", 
        x = "chlorophyll-a concentration", y = "biomass") + 
   scale_color_manual(values = c("copepod" = "#238a8d", "chaetognath" = "#440154"), name = "") +
   theme_minimal() 
    
-ggsave("visuals/chlabiomass.jpg", device = "jpg", dpi = 500) 
+ggsave("visuals/fig4.jpg", device = "jpg", dpi = 500) 
 ```
 
 ```{r}
@@ -207,13 +207,13 @@ measures %>%
   group_by(cope_or_chae) %>%
       ggplot(aes(x = station, y = n, fill = functional_group)) +
       geom_col() +
-      labs(title = "Proportion of Chaetognaths and Copepods",
+      labs(title = "fig. 3 Proportion of Chaetognaths and Copepods",
             subtitle = "measured from subsample", 
             x = "station", y = "proportion") + 
        # scale_fill_manual(values = c("copepod" = "#238a8d", "chaetognath" = "#440154"), name = "") +
        scale_fill_manual(values = c("copepod (herbivorous/ omnivorous)" = "#29af7f", "copepod (carnivorous)" = "#bade28", "chaetognath adult" = "#440154", "chaetognath juvenile" = "#2d718e"), name = "") +
         theme_minimal() 
-  ggsave("visuals/proportions.jpg", device = "jpg", dpi = 500)
+  ggsave("visuals/fig3.jpg", device = "jpg", dpi = 500)
 ```
 
 ```{r}
@@ -235,11 +235,17 @@ measures %>%
   ggplot(aes(x = chl_a_concentration, y = corrected_size)) + 
   geom_jitter(color = "#2d718e") +
   geom_smooth(color = "#2d718e")+
-    labs(title = "Copepods Density and Chloropyll-a concentration", 
+    labs(title = "fig. 6 Copepod Size and Chloropyll-a concentration", 
          x = "chlorophyll-a concentration", 
          y = "copepod size") +
   theme_minimal()
 
-ggsave("visuals/chlaconcentrationandsize.jpg", device = "jpg", dpi = 500)
+ggsave("visuals/fig6.jpg", device = "jpg", dpi = 500)
+
+measures$corrected_size <- as.numeric(measures$corrected_size)
+                                      
+measures %>% 
+  filter(cope_or_chae == "copepod") %>%
+  median(measures$corrected_size)
 ```
 

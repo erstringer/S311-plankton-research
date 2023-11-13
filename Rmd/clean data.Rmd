@@ -23,9 +23,6 @@ S311_meta <- read_csv("~/Documents/repos/S311-plankton-research/S311_meta.csv")
 ```{r clean-data}
 clean_names(S311_measures, case = "snake")
 
-# coerce-variables
-#nequasset_2021$longitude <- as.double(nequasset_2021$longitude)
-
 #correct abbreviations
 S311_measures <- S311_measures %>%
    mutate(cope_or_chae = case_when(
