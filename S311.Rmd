@@ -98,13 +98,16 @@ use_this_meta %>%
   geom_line(aes(x = station, y = biomass_cop), size = 1) +
   geom_line(aes(x = station, y = num_juv), size = 1) +
   geom_line(aes(x = station, y = num_adult), size = 1) +
+ theme_minimal() + 
+  theme(plot.caption = element_text(hjust = 0)) +
 labs(title = "fig. 2 Chaetognaths and Copepods",
-       subtitle = "biomass from hundred counts", 
+       subtitle = "biomass from hundred counts",
+     caption = "Biomass of Copepods and Chaetognaths at each station. 
+     The correlation between chaetognaths and copepods indicates that chaetognaths likely impact copepod communities.",
        x = "station", y = "biomass") +
-  scale_color_manual(values = c("copepod" = "#238a8d", "adult chaetognath" = "#440154", "juvenile chaetognath" = "#bade28"), name = "") +
-  theme_minimal() 
+  scale_color_manual(values = c("copepod" = "#238a8d", "adult chaetognath" = "#440154", "juvenile chaetognath" = "#bade28"), name = "")
 
-ggsave("visuals/fig2.jpg", device = "jpg", dpi = 500)
+ggsave("visuals/corrected_fig2.jpg", device = "jpg", dpi = 500)
 
       
 # 104 chaetognaths total, 72 adults (69.2%), 32 juveniles(30.7%).
@@ -164,12 +167,15 @@ ggplot(S311_data, aes(x = station)) +
     geom_area(aes(x = station, y = chl_a_concentration *100), size = 1, color = "#bade28", fill = "#bade28") +
     # geom_line(aes(x = station, y = biomass_chaetognaths), size = 1, color = "#238a8d") +
     scale_y_continuous(name = "copepod biomass", sec.axis = sec_axis( trans=~./100, name="Chl-a concentration")) +
-    theme_minimal() +
+      theme_minimal()+
     theme(axis.title.y = element_text(color = copColor),
-          axis.title.y.right = element_text(color = chlaColor))+
-    labs(title = "fig. 5 Copepods and Chloropyll-a concentration") 
+          axis.title.y.right = element_text(color = chlaColor), 
+          plot.caption = element_text(hjust = 0))+
+    labs(title = "fig. 5 Copepods and Chloropyll-a concentration", 
+         caption = "Copepod biomass and chlorophyll-a concentration at each station. 
+         A decline in chlorophyll-a concentration corresponds to a decline in copepod biomass, but overall there is little correlation.") 
 
-ggsave("visuals/fig5.jpg", device = "jpg", dpi = 500)
+ggsave("visuals/corrected_fig5.jpg", device = "jpg", dpi = 500)
 ```
 
 ```{r}
@@ -188,13 +194,16 @@ meta_data %>%
 ggplot(aes(x = chl_a_concentration, y = biomass, color = cope_or_chae)) +
 geom_jitter()+
 geom_smooth(method= lm)+
+  theme_minimal()+
+  theme(plot.caption = element_text(hjust = 0)) +
 labs(title = "fig. 4 Chlorophyll-a concentration and biomass of Chaetognaths and Copepods",
        subtitle = "biomass from hundred counts", 
+     caption = "Copepod and chaetognath biomass measured across chlorophyll-a concentration. 
+     Copepods and chaetognaths show a slight increase in overall biomass with the increase of chlorophyll-a.",
        x = "chlorophyll-a concentration", y = "biomass") + 
-  scale_color_manual(values = c("copepod" = "#238a8d", "chaetognath" = "#440154"), name = "") +
-  theme_minimal() 
+  scale_color_manual(values = c("copepod" = "#238a8d", "chaetognath" = "#440154"), name = "")
    
-ggsave("visuals/fig4.jpg", device = "jpg", dpi = 500) 
+ggsave("visuals/corrected_fig4.jpg", device = "jpg", dpi = 500) 
 ```
 
 ```{r}
@@ -207,13 +216,18 @@ measures %>%
   group_by(cope_or_chae) %>%
       ggplot(aes(x = station, y = n, fill = functional_group)) +
       geom_col() +
+  theme_minimal() +
+  theme(plot.caption = element_text(hjust = 0)) +
       labs(title = "fig. 3 Proportion of Chaetognaths and Copepods",
             subtitle = "measured from subsample", 
+           caption = "Proportion of herbivorous/ omnivorous vs carnivorous copepods and adult vs juvenile chaetognaths.
+           The vast majority (99%) of copepods are herbivorous/ omnivorous.
+           There is a fairly even proportion of juvenile to adult chaetognaths.",
             x = "station", y = "proportion") + 
        # scale_fill_manual(values = c("copepod" = "#238a8d", "chaetognath" = "#440154"), name = "") +
-       scale_fill_manual(values = c("copepod (herbivorous/ omnivorous)" = "#29af7f", "copepod (carnivorous)" = "#bade28", "chaetognath adult" = "#440154", "chaetognath juvenile" = "#2d718e"), name = "") +
-        theme_minimal() 
-  ggsave("visuals/fig3.jpg", device = "jpg", dpi = 500)
+       scale_fill_manual(values = c("copepod (herbivorous/ omnivorous)" = "#29af7f", "copepod (carnivorous)" = "#bade28", "chaetognath adult" = "#440154", "chaetognath juvenile" = "#2d718e"), name = "")
+        
+  ggsave("visuals/corrected_fig3.jpg", device = "jpg", dpi = 500)
 ```
 
 ```{r}
@@ -235,17 +249,23 @@ measures %>%
   ggplot(aes(x = chl_a_concentration, y = corrected_size)) + 
   geom_jitter(color = "#2d718e") +
   geom_smooth(color = "#2d718e")+
-    labs(title = "fig. 6 Copepod Size and Chloropyll-a concentration", 
+  theme_minimal()+
+  theme(plot.caption = element_text(hjust = 0)) +
+    labs(title = "fig. 6 Copepod Size and Chloropyll-a concentration",
+         caption = "Copepod size paired with chlorophyll-a concentration. 
+         There is no notable correlation showing that copepod size scales with chlorophyll-a concentration.",
          x = "chlorophyll-a concentration", 
-         y = "copepod size") +
-  theme_minimal()
+         y = "copepod size")
 
-ggsave("visuals/fig6.jpg", device = "jpg", dpi = 500)
+ggsave("visuals/correct_fig6.jpg", device = "jpg", dpi = 500)
 
-measures$corrected_size <- as.numeric(measures$corrected_size)
-                                      
-measures %>% 
-  filter(cope_or_chae == "copepod") %>%
-  median(measures$corrected_size)
+                              
+cops <- measures %>%
+  filter(cope_or_chae == "copepod")
+cops %>%
+  median(corrected_size)
+
+cops %>% 
+  summarize(median = median(corrected_size, na.rm = TRUE))
 ```
 
